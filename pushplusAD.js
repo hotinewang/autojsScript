@@ -1,8 +1,8 @@
-auto.waitFor(); 
+auto.waitFor(); // 
 
-adMaxTime=60000;//单个广告最长播放时间(毫秒)（超过时间会返回处理）
-adWaitTime=4000 //检测广告是否播放完毕的时间间隔(毫秒)
-maxRunTime=30*60*1000//本脚本最长运行时间(毫秒=分钟*60*1000)
+adMaxTime=35000;//广告最长播放时间(毫秒)（超过时间会返回处理）
+adWaitTime=4000 //广告检测是否播放完毕的时间间隔(毫秒)
+maxRunTime=30*60*1000//脚本最长运行时间(毫秒=分钟*60*1000)
 //_score1=0;//初始分值
 //_score2=0;//当前分值
 
@@ -15,8 +15,8 @@ sleep(500)
 //上划进入小程序
 gesture(500,[device.width/2+random(30,60),device.height/7+random(0,60)],[device.width/2+random(0,30),device.height/4*3+random(0,60)])
 sleep(1000)
-//打开pushplus小程序
-if(text("pushplus").findOnce()==null)
+//查询并打开pushplus小程序
+if(text("pushplus").findOne()==null)
 {
   	alert("没有在微信小程序列表中找到pushplus推送加，请先手动打开一次或加入到“我的小程序”中。\n脚本终止。");
 	  toast("没有在微信小程序列表中找到pushplus推送加，请先手动打开一次或加入到“我的小程序”中。\n脚本终止。");
@@ -24,8 +24,8 @@ if(text("pushplus").findOnce()==null)
   	exit();
 }
 click(text("pushplus").findOnce().bounds().centerX(),text("pushplus").findOnce().bounds().centerY())
-sleep(2000)
-//进入刷广告赚积分页面
+//进入刷广告赚积分页面,此处可能因网速慢造成小程序启动较慢，因此等待时间不建议过短。
+sleep(5000)
 click(420,600)
 startTimeMillis = new Date().getTime();//脚本运行的初始时间
 
