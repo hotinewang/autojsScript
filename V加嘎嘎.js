@@ -27,10 +27,16 @@ function sleep2(minTime,maxTime)
 
 //---------------------------------------------------------------------------
 
+
+/**
+ * 进入V+会员领取的页面
+ * @returns 
+ */
 function openVplusPage()
 {
     if(currentPackage()!="cn.com.cmbc.newmbank")
     {
+      	toastLog("启动手机银行");
         launch("cn.com.cmbc.newmbank");
         sleep(1000);
     }
@@ -62,6 +68,11 @@ function openVplusPage()
     
 }
 
+/**
+ * 尝试循坏点击某权益并领取
+ * @param {*} type 权益全名（手机银行中显示的名称）
+ * @returns 
+ */
 function getVplusReward(type)
 {
     toastLog("开始割割："+type+"!")
@@ -77,25 +88,23 @@ function getVplusReward(type)
         got=false;
         while(got==false)
         {
-            text(type).findOne().click();
-            toastLog("点");
-            sleep(400);
-            //关掉权益已抢光按钮
+            
+            //如果弹出了“该权益已抢光”，关掉
             if(text("该权益已抢光").findOnce())
             {
                 text("关闭").findOnce().click();
-                toastLog("关");
+                //toastLog("关");
                 sleep(400);
             }
-            //关掉访问用户过多提示
-            if(textStartsWith("当前访问用户过多").findOnce())
+            //如果弹出了“当前访问用户过多”，关掉
+            else if(textStartsWith("当前访问用户过多").findOnce())
             {
                 text("确定").findOnce().click();
-                toastLog("关");
+                //toastLog("关");
                 sleep(400);
             }
-            //点击"确定领取"
-            if(text("确定领取").findOnce())
+            //如果进入了权益领取界面，点击"确定领取"
+            else if(text("确定领取").findOnce())
             {
                 //text("确定领取").findOnce().click();
                 clickbounds(text("确定领取").findOnce().bounds())
@@ -115,6 +124,13 @@ function getVplusReward(type)
                     back();
                     return false;
                 }
+              	if(textStartsWith("本周期内您可领权益次数已用尽").findOnce())
+                {
+                    toastLog("可领权益次数已用尽：“"+type+"”");
+                    text("确定").findOnce().click();
+                    back();
+                    return false;
+                }
                 if(text("提示").findOnce())
                 {
                     toastLog("预料外的提示内容：“"+type+"”");
@@ -124,12 +140,18 @@ function getVplusReward(type)
                     back();
                     return false;
                 }
-
             }
-            //got=true;
+          	//如果在V+会员权益选择界面，则点击目标权益
+            else if(text(type).findOnce())
+            {
+                text(type).findOnce().click();
+                //toastLog("点");
+                sleep(400);
+            }
+            
         }
     }
-    else if(type=="")
+    else if(type=="其他权益")
     {
         //
     }
@@ -142,7 +164,7 @@ auto.waitFor();
 
 if(openVplusPage())
 {
-    getVplusReward("微信立减金");
+    //getVplusReward("微信立减金");
 }
 if(openVplusPage())
 {
